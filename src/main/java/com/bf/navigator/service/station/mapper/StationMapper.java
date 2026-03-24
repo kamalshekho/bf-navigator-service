@@ -8,26 +8,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Component
 public class StationMapper {
 
-    public StationDTO stationJsonToDto(JsonNode stationNode) {
-        if (stationNode == null)
-            return null;
-
-        StationDTO dto = new StationDTO();
-        dto.setNumber(stationNode.has("number") ? stationNode.get("number").asLong() : null);
-        dto.setName(stationNode.has("name") ? stationNode.get("name").asText() : null);
-        dto.setCity(stationNode.has("mailingAddress") && stationNode.get("mailingAddress").has("city")
-                ? stationNode.get("mailingAddress").get("city").asText()
-                : null);
-        dto.setEvaNumber(getMainEvaNumber(stationNode));
-        return dto;
+    public StationDTO stationJsonToDto(JsonNode node) {
+        return new StationDTO(
+                node.path("name").asText(null),
+                node.path("number").isMissingNode() ? null : node.path("number").asLong(),
+                getMainEvaNumber(node),
+                node.path("mailingAddress").path("city").asText(null));
     }
 
-    private Long getMainEvaNumber(JsonNode stationNode) {
-        if (stationNode.has("evaNumbers") && stationNode.get("evaNumbers").isArray()) {
-            for (JsonNode eva : stationNode.get("evaNumbers")) {
-                if (eva.has("isMain") && eva.get("isMain").asBoolean()) {
-                    return eva.get("number").asLong();
-                }
+    private Long getMainEvaNumber(JsonNode node) {
+        for (JsonNode eva : node.path("evaNumbers")) {
+            if (eva.path("isMain").asBoolean(false)) {
+                return eva.path("number").asLong();
             }
         }
         return null;
