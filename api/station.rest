@@ -1,2 +1,2 @@
-GET http://localhost:8080/stations/search?query=Hamburg*
+GET http://localhost:8080/stations/search?query=Buchholz*
 Accept: application/json

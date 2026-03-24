@@ -26,6 +26,10 @@ public class StationService {
 
         var rootNode = staDaClient.searchStations(query);
 
+        if (rootNode == null) {
+            return List.of();
+        }
+
         return StreamSupport.stream(rootNode.spliterator(), false)
                 .map(stationMapper::stationJsonToDto)
                 .filter(dto -> dto.getEvaNumber() != null)
