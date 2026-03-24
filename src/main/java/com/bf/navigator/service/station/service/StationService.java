@@ -11,8 +11,6 @@ import com.bf.navigator.service.station.dto.StationDTO;
 import com.bf.navigator.service.station.mapper.StationMapper;
 
 import lombok.RequiredArgsConstructor;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +24,7 @@ public class StationService {
             throw new IllegalArgumentException("Query must not be empty");
         }
 
-        ArrayNode rootNode = staDaClient.searchStations(query);
+        var rootNode = staDaClient.searchStations(query);
 
         return StreamSupport.stream(rootNode.spliterator(), false)
                 .map(stationMapper::stationJsonToDto)
