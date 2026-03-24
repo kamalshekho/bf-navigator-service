@@ -1,21 +1,28 @@
 package com.bf.navigator.service.station.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
 import com.bf.navigator.service.station.dto.StationDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 
-@Mapper(componentModel = "spring")
-public interface StationMapper {
+@Component
+public class StationMapper {
 
-    @Mapping(target = "number", source = "number")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "city", source = "mailingAddress.city")
-    @Mapping(target = "evaNumber", expression = "java(getMainEvaNumber(stationNode))")
-    StationDTO stationJsonToDto(JsonNode stationNode);
+    public StationDTO stationJsonToDto(JsonNode stationNode) {
+        if (stationNode == null)
+            return null;
 
-    default Long getMainEvaNumber(JsonNode stationNode) {
+        StationDTO dto = new StationDTO();
+        dto.setNumber(stationNode.has("number") ? stationNode.get("number").asLong() : null);
+        dto.setName(stationNode.has("name") ? stationNode.get("name").asText() : null);
+        dto.setCity(stationNode.has("mailingAddress") && stationNode.get("mailingAddress").has("city")
+                ? stationNode.get("mailingAddress").get("city").asText()
+                : null);
+        dto.setEvaNumber(getMainEvaNumber(stationNode));
+        return dto;
+    }
+
+    private Long getMainEvaNumber(JsonNode stationNode) {
         if (stationNode.has("evaNumbers") && stationNode.get("evaNumbers").isArray()) {
             for (JsonNode eva : stationNode.get("evaNumbers")) {
                 if (eva.has("isMain") && eva.get("isMain").asBoolean()) {

@@ -3,7 +3,10 @@ package com.bf.navigator.service.station.client;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Component
 public class StaDaClient {
@@ -11,18 +14,21 @@ public class StaDaClient {
     private final WebClient webClient;
     private final String clientId;
     private final String clientSecret;
+    private final ObjectMapper objectMapper;
 
     public StaDaClient(WebClient webClient,
             @Value("${db.client-id}") String clientId,
-            @Value("${db.client-secret}") String clientSecret) {
+            @Value("${db.client-secret}") String clientSecret,
+            ObjectMapper objectMapper) {
         this.webClient = webClient;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.objectMapper = objectMapper;
     }
 
-    public String searchStations(String query) {
+    public ArrayNode searchStations(String query) {
         try {
-            return webClient.get()
+            String response = webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/stations")
                             .queryParam("searchstring", query)
@@ -32,9 +38,15 @@ public class StaDaClient {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-        } catch (WebClientResponseException e) {
-            System.err
-                    .println("Error calling StaDa API: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+
+            JsonNode rootNode = objectMapper.readTree(response);
+
+            if (!rootNode.isArray()) {
+                throw new RuntimeException("Expected JSON array from StaDa API");
+            }
+
+            return (ArrayNode) rootNode;
+        } catch (Exception e) {
             throw new RuntimeException("Failed to fetch stations from StaDa API", e);
         }
     }
