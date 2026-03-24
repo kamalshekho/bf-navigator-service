@@ -5,8 +5,11 @@ services:
     container_name: bf-backend
     ports:
       - "8081:8080"
-    env_file:
-      - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bfnavigator
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
     depends_on:
       db:
         condition: service_healthy
