@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bf.navigator.service.station.dto.StationDTO;
@@ -22,5 +23,11 @@ public class StationController {
     public ResponseEntity<List<StationDTO>> searchStations(@RequestParam String query) {
         List<StationDTO> stations = stationService.searchStations(query);
         return ResponseEntity.ok(stations);
+    }
+
+    @GetMapping("/stations/{id}")
+    public ResponseEntity<StationDTO> getStation(@PathVariable Long id) {
+        StationDTO station = stationService.getStationById(id);
+        return ResponseEntity.ok(station);
     }
 }
