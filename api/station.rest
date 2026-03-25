@@ -1,6 +1,6 @@
-GET http://localhost:8080/stations/search?query=Buchholz*
+GET http://localhost:8080/stations/search?query=Hamburg*
 Accept: application/json
 
 ### Get station details
-GET http://localhost:8080/stations/53
+GET http://localhost:8080/stations/2458
 Accept: application/json
