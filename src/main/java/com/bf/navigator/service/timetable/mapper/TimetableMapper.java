@@ -46,6 +46,7 @@ public class TimetableMapper {
         dto.setTrainNumber(tl.path("n").asText(null));
 
         JsonNode dp = s.path("dp");
+        dto.setLine(dp.path("l").asText(null));
         dto.setDepartureTime(formatTime(dp.path("pt").asText(null)));
         dto.setDeparturePlatform(dp.path("pp").asText(null));
         dto.setRoute(parseRoute(dp.path("ppth").asText(null)));

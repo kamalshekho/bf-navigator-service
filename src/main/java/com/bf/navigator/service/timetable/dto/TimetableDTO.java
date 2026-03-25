@@ -12,6 +12,7 @@ import java.util.List;
 public class TimetableDTO {
     private String trainNumber;
     private String trainType;
+    private String line;
     private String departureTime;
     private String arrivalTime;
     private String departurePlatform;
