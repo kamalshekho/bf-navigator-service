@@ -12,4 +12,8 @@ public class StationDTO {
     private Long number;
     private Long evaNumber;
     private String city;
+    private Integer category;
+    private String hasSteplessAccess;
+    private String hasMobilityService;
+    private Boolean hasWiFi;
 }
