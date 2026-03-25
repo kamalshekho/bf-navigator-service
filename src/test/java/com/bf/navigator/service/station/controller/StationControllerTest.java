@@ -25,8 +25,12 @@ class StationControllerTest {
     private StationController stationController;
 
     @Test
-    void searchStations_callsService_returnsOk() {
-        StationDTO dto = new StationDTO("Test", 1L, 1L, "Test");
+    void searchStationsCallsServiceReturnsOk() {
+        StationDTO dto = new StationDTO();
+        dto.setName("Test");
+        dto.setNumber(1L);
+        dto.setEvaNumber(1L);
+        dto.setCity("Test");
         when(stationService.searchStations("test")).thenReturn(List.of(dto));
 
         ResponseEntity<List<StationDTO>> result = stationController.searchStations("test");
@@ -34,5 +38,25 @@ class StationControllerTest {
         verify(stationService).searchStations("test");
         assertNotNull(result.getBody());
         assertFalse(result.getBody().isEmpty());
+    }
+
+    @Test
+    void getStationCallsServiceReturnsOk() {
+        StationDTO dto = new StationDTO();
+        dto.setName("Hamburg Hbf");
+        dto.setNumber(2514L);
+        dto.setEvaNumber(8002549L);
+        dto.setCity("Hamburg");
+        dto.setCategory(2);
+        dto.setHasSteplessAccess("yes");
+        dto.setHasMobilityService("yes");
+        dto.setHasWiFi(true);
+        when(stationService.getStationById(2514L)).thenReturn(dto);
+
+        ResponseEntity<StationDTO> result = stationController.getStation(2514L);
+
+        verify(stationService).getStationById(2514L);
+        assertNotNull(result.getBody());
+        assertEquals("Hamburg Hbf", result.getBody().getName());
     }
 }

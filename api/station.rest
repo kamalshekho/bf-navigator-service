@@ -1,2 +1,6 @@
 GET http://localhost:8080/stations/search?query=Buchholz*
 Accept: application/json
+
+### Get station details
+GET http://localhost:8080/stations/53
+Accept: application/json

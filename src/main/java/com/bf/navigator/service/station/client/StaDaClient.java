@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Component
@@ -43,6 +44,23 @@ public class StaDaClient {
             return (ArrayNode) rootNode.get("result");
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse StaDa response", e);
+        }
+    }
+
+    public JsonNode getStationById(Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("DB-Client-ID", clientId);
+        headers.set("DB-Api-Key", clientSecret);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String url = baseUrl + "/stations/" + id;
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+        try {
+            JsonNode rootNode = objectMapper.readTree(response.getBody());
+            return rootNode.path("result").get(0);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch station " + id + " from StaDa API", e);
         }
     }
 }
