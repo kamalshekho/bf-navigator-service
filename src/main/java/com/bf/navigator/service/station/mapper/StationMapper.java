@@ -9,11 +9,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class StationMapper {
 
     public StationDTO stationJsonToDto(JsonNode node) {
-        return new StationDTO(
-                node.path("name").asText(null),
-                node.path("number").isMissingNode() ? null : node.path("number").asLong(),
-                getMainEvaNumber(node),
-                node.path("mailingAddress").path("city").asText(null));
+        StationDTO dto = new StationDTO();
+        dto.setName(node.path("name").asText(null));
+        dto.setNumber(node.path("number").isMissingNode() ? null : node.path("number").asLong());
+        dto.setEvaNumber(getMainEvaNumber(node));
+        dto.setCity(node.path("mailingAddress").path("city").asText(null));
+        dto.setCategory(node.path("category").asInt());
+        dto.setHasSteplessAccess(node.path("hasSteplessAccess").asText(null));
+        dto.setHasMobilityService(node.path("hasMobilityService").asText(null));
+        dto.setHasWiFi(node.path("hasWiFi").asBoolean());
+        return dto;
     }
 
     private Long getMainEvaNumber(JsonNode node) {

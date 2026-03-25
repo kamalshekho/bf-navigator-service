@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.bf.navigator.service.station.client.StaDaClient;
 import com.bf.navigator.service.station.dto.StationDTO;
 import com.bf.navigator.service.station.mapper.StationMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +26,6 @@ public class StationService {
         }
 
         var rootNode = staDaClient.searchStations(query);
-
         if (rootNode == null) {
             return List.of();
         }
@@ -34,5 +34,21 @@ public class StationService {
                 .map(stationMapper::stationJsonToDto)
                 .filter(dto -> dto.getEvaNumber() != null)
                 .collect(Collectors.toList());
+    }
+
+    public StationDTO getStationById(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Invalid station id: " + id);
+        }
+
+        JsonNode node = staDaClient.getStationById(id);
+        if (node == null) {
+            throw new RuntimeException("Station not found with id: " + id);
+        }
+        StationDTO dto = stationMapper.stationJsonToDto(node);
+        if (dto.getEvaNumber() == null) {
+            throw new RuntimeException("Station " + id + " has no EVA number");
+        }
+        return dto;
     }
 }
