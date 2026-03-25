@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,19 +25,16 @@ class TimetableControllerTest {
 
     @Test
     void getTimetableCallsServiceReturnsOk() {
-        // given
         Long evaNumber = 8002549L;
         String date = "260325";
         String time = "0900";
-        List<TimetableDTO> mockDtos = List
-                .of(new TimetableDTO("123", "ICE", "09:02", null, "5", null, List.of("Berlin")));
+        List<TimetableDTO> mockDtos = List.of(
+                new TimetableDTO("123", "ICE", "09:02", null, "5", null, null, List.of("Berlin")));
 
         when(timetableService.getTimetable(evaNumber, date, "09")).thenReturn(mockDtos);
 
-        // when
         ResponseEntity<List<TimetableDTO>> result = timetableController.getTimetable(evaNumber, date, time);
 
-        // then
         assertTrue(result.getStatusCode().is2xxSuccessful());
         assertEquals(mockDtos, result.getBody());
         verify(timetableService).getTimetable(evaNumber, date, "09");

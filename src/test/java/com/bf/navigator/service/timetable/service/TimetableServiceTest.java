@@ -12,8 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,21 +29,18 @@ class TimetableServiceTest {
 
     @Test
     void getTimetableValidInputReturnsList() {
-        // given
         Long evaNumber = 8002549L;
         String date = "260325";
         String hour = "09";
         String mockXml = "<mock-xml/>";
-        List<TimetableDTO> mockDtos = List
-                .of(new TimetableDTO("123", "ICE", "09:02", "09:00", "5", "4", List.of("Berlin")));
+        List<TimetableDTO> mockDtos = List.of(
+                new TimetableDTO("123", "ICE", "09:02", "09:00", "5", "4", null, List.of("Berlin")));
 
         when(timetableClient.getTimetableRaw(evaNumber, date, hour)).thenReturn(mockXml);
         when(timetableMapper.parseTimetables(mockXml)).thenReturn(mockDtos);
 
-        // when
         List<TimetableDTO> result = timetableService.getTimetable(evaNumber, date, hour);
 
-        // then
         assertEquals(mockDtos, result);
         verify(timetableClient).getTimetableRaw(evaNumber, date, hour);
         verify(timetableMapper).parseTimetables(mockXml);
@@ -52,16 +48,13 @@ class TimetableServiceTest {
 
     @Test
     void getTimetableEmptyXmlReturnsEmptyList() {
-        // given
         Long evaNumber = 8002549L;
         String date = "260325";
         String hour = "09";
         when(timetableClient.getTimetableRaw(evaNumber, date, hour)).thenReturn("");
 
-        // when
         List<TimetableDTO> result = timetableService.getTimetable(evaNumber, date, hour);
 
-        // then
         assertTrue(result.isEmpty());
     }
 
