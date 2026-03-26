@@ -37,7 +37,7 @@ public class StationController {
     }
 
 
-    @GetMapping("/station/{stationNumber}/facilities")
+    @GetMapping("/stations/{stationNumber}/facilities")
     public ResponseEntity<@NonNull List<FacilityDTO>> getStationFacilities(@PathVariable Long stationNumber) {
         List<FacilityDTO> facilities = stationService.getStationFacilities(stationNumber);
         return ResponseEntity.ok(facilities);

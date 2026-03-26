@@ -20,7 +20,7 @@ public class StationFacilitiesClient {
     private final String clientId;
     private final String clientSecret;
     private final ObjectMapper objectMapper;
-    private static final String baseUrl = "https://apis.deutschebahn.com/db-api-marketplace/apis/fasta/v2/";
+    private static final String baseUrl = "https://apis.deutschebahn.com/db-api-marketplace/apis/fasta/v2";
 
 
     public StationFacilitiesClient(RestTemplate restTemplate,
