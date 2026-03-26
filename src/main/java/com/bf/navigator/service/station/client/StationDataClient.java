@@ -1,26 +1,29 @@
 package com.bf.navigator.service.station.client;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+
 @Component
-public class StaDaClient {
+public class StationDataClient {
 
     private final RestTemplate restTemplate;
     private final String clientId;
     private final String clientSecret;
     private final ObjectMapper objectMapper;
-    private final String baseUrl = "https://apis.deutschebahn.com/db-api-marketplace/apis/station-data/v2";
+    private static final String baseUrl = "https://apis.deutschebahn.com/db-api-marketplace/apis/station-data/v2";
 
-    public StaDaClient(RestTemplate restTemplate,
+
+    public StationDataClient(RestTemplate restTemplate,
             @Value("${db.client-id}") String clientId,
             @Value("${db.client-secret}") String clientSecret,
             ObjectMapper objectMapper) {
@@ -29,6 +32,7 @@ public class StaDaClient {
         this.clientSecret = clientSecret;
         this.objectMapper = objectMapper;
     }
+
 
     public ArrayNode searchStations(String query) {
         HttpHeaders headers = new HttpHeaders();
@@ -47,6 +51,7 @@ public class StaDaClient {
         }
     }
 
+
     public JsonNode getStationById(Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("DB-Client-ID", clientId);
@@ -63,4 +68,5 @@ public class StaDaClient {
             throw new RuntimeException("Failed to fetch station " + id + " from StaDa API", e);
         }
     }
+
 }
