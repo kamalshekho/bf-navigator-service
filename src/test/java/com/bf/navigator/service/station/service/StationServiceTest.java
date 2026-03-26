@@ -1,23 +1,32 @@
 package com.bf.navigator.service.station.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
-
-import com.bf.navigator.service.station.client.StationDataClient;
-import com.bf.navigator.service.station.dto.StationDTO;
-import com.bf.navigator.service.station.mapper.StationMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.bf.navigator.service.station.client.StationDataClient;
+import com.bf.navigator.service.station.client.StationFacilitiesClient;
+import com.bf.navigator.service.station.dto.FacilityDTO;
+import com.bf.navigator.service.station.dto.StationDTO;
+import com.bf.navigator.service.station.mapper.FacilityMapper;
+import com.bf.navigator.service.station.mapper.StationMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 
 @ExtendWith(MockitoExtension.class)
 class StationServiceTest {
@@ -26,10 +35,17 @@ class StationServiceTest {
     private StationDataClient stationDataClient;
 
     @Mock
+    private StationFacilitiesClient stationFacilitiesClient;
+
+    @Mock
     private StationMapper stationMapper;
+
+    @Mock
+    private FacilityMapper facilityMapper;
 
     @InjectMocks
     private StationService stationService;
+
 
     @Test
     void searchStationsHappyReturnsStations() {
@@ -53,15 +69,18 @@ class StationServiceTest {
         assertEquals("Hamburg Hbf", result.get(0).getName());
     }
 
+
     @Test
     void searchStationsEmptyQueryThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> stationService.searchStations(""));
     }
 
+
     @Test
     void searchStationsNullQueryThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> stationService.searchStations(null));
     }
+
 
     @Test
     void getStationByIdValidReturnsStation() {
@@ -79,6 +98,7 @@ class StationServiceTest {
         assertEquals("Hamburg Hbf", result.getName());
     }
 
+
     @Test
     void getStationByIdInvalidIdThrows() {
         assertThrows(IllegalArgumentException.class, () -> stationService.getStationById(null));
@@ -86,12 +106,14 @@ class StationServiceTest {
         verifyNoInteractions(stationDataClient);
     }
 
+
     @Test
     void getStationByIdNoStationThrows() {
         Long id = 999L;
         when(stationDataClient.getStationById(id)).thenReturn(null);
         assertThrows(RuntimeException.class, () -> stationService.getStationById(id));
     }
+
 
     @Test
     void getStationByIdNoEvaThrows() {
@@ -103,4 +125,49 @@ class StationServiceTest {
         when(stationMapper.stationJsonToDto(jsonNode)).thenReturn(dto);
         assertThrows(RuntimeException.class, () -> stationService.getStationById(id));
     }
+
+
+    @Test
+    void getStationFacilitiesReturnsFacilities() {
+        Long stationNumber = 53L;
+        String facilityDescription = "zu Gleis 1/2";
+
+        JsonNode jsonNode = mock(JsonNode.class);
+        List<JsonNode> nodes = List.of(jsonNode);
+        ArrayNode arrayNode = mock(ArrayNode.class);
+        FacilityDTO dto = FacilityDTO.builder().description(facilityDescription).build();
+
+        when(arrayNode.spliterator()).thenReturn(Spliterators.spliterator(nodes, Spliterator.ORDERED));
+        when(facilityMapper.facilityJsonToDto(jsonNode)).thenReturn(dto);
+        when(stationFacilitiesClient.getStationWithFacilitiesJson(stationNumber)).thenReturn(arrayNode);
+
+        List<FacilityDTO> result = stationService.getStationFacilities(stationNumber);
+
+        verify(stationFacilitiesClient).getStationWithFacilitiesJson(stationNumber);
+        verify(facilityMapper).facilityJsonToDto(jsonNode);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(facilityDescription, result.getFirst().getDescription());
+    }
+
+
+    @Test
+    void getStationFacilitiesInvalidIdThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> stationService.getStationFacilities(null));
+        assertThrows(IllegalArgumentException.class, () -> stationService.getStationFacilities(0L));
+        verifyNoInteractions(stationFacilitiesClient);
+    }
+
+
+    @Test
+    void getFacilityByIdNoFacilitiesReturnsEmptyArray() {
+        Long stationNumber = 42L;
+
+        when(stationFacilitiesClient.getStationWithFacilitiesJson(stationNumber)).thenReturn(null);
+
+        List<FacilityDTO> result = stationService.getStationFacilities(stationNumber);
+
+        assertEquals(0, result.size());
+    }
+
 }

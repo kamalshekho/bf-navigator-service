@@ -62,6 +62,10 @@ public class StationService {
 
 
     public List<FacilityDTO> getStationFacilities(Long stationNumber) {
+        if (stationNumber == null || stationNumber <= 0) {
+            throw new IllegalArgumentException("Invalid station number: " + stationNumber);
+        }
+
         var rootNode = stationFacilitiesClient.getStationWithFacilitiesJson(stationNumber);
         if (rootNode == null) {
             return List.of();
