@@ -6,26 +6,33 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Service;
 
-import com.bf.navigator.service.station.client.StaDaClient;
+import com.bf.navigator.service.station.client.StationDataClient;
+import com.bf.navigator.service.station.client.StationFacilitiesClient;
+import com.bf.navigator.service.station.dto.FacilityDTO;
 import com.bf.navigator.service.station.dto.StationDTO;
+import com.bf.navigator.service.station.mapper.FacilityMapper;
 import com.bf.navigator.service.station.mapper.StationMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
 
+
 @Service
 @RequiredArgsConstructor
 public class StationService {
 
-    private final StaDaClient staDaClient;
+    private final StationDataClient stationDataClient;
+    private final StationFacilitiesClient stationFacilitiesClient;
     private final StationMapper stationMapper;
+    private final FacilityMapper facilityMapper;
+
 
     public List<StationDTO> searchStations(String query) {
         if (query == null || query.isBlank()) {
             throw new IllegalArgumentException("Query must not be empty");
         }
 
-        var rootNode = staDaClient.searchStations(query);
+        var rootNode = stationDataClient.searchStations(query);
         if (rootNode == null) {
             return List.of();
         }
@@ -36,12 +43,13 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+
     public StationDTO getStationById(Long id) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Invalid station id: " + id);
         }
 
-        JsonNode node = staDaClient.getStationById(id);
+        JsonNode node = stationDataClient.getStationById(id);
         if (node == null) {
             throw new RuntimeException("Station not found with id: " + id);
         }
@@ -51,4 +59,17 @@ public class StationService {
         }
         return dto;
     }
+
+
+    public List<FacilityDTO> getStationFacilities(Long stationNumber) {
+        var rootNode = stationFacilitiesClient.getStationWithFacilitiesJson(stationNumber);
+        if (rootNode == null) {
+            return List.of();
+        }
+
+        return StreamSupport.stream(rootNode.spliterator(), false)
+                .map(facilityMapper::facilityJsonToDto)
+                .collect(Collectors.toList());
+    }
+
 }

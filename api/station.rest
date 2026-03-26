@@ -4,3 +4,8 @@ Accept: application/json
 ### Get station details
 GET http://localhost:8080/stations/2458
 Accept: application/json
+
+## Get station facilities
+###
+GET http://localhost:8081/station/53/facilities
+Accept: application/json

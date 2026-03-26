@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 
-import com.bf.navigator.service.station.client.StaDaClient;
+import com.bf.navigator.service.station.client.StationDataClient;
 import com.bf.navigator.service.station.dto.StationDTO;
 import com.bf.navigator.service.station.mapper.StationMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class StationServiceTest {
 
     @Mock
-    private StaDaClient staDaClient;
+    private StationDataClient stationDataClient;
 
     @Mock
     private StationMapper stationMapper;
@@ -42,11 +42,11 @@ class StationServiceTest {
         dto.setName("Hamburg Hbf");
         dto.setEvaNumber(8002549L);
         when(stationMapper.stationJsonToDto(jsonNode)).thenReturn(dto);
-        when(staDaClient.searchStations(query)).thenReturn(arrayNode);
+        when(stationDataClient.searchStations(query)).thenReturn(arrayNode);
 
         List<StationDTO> result = stationService.searchStations(query);
 
-        verify(staDaClient).searchStations(query);
+        verify(stationDataClient).searchStations(query);
         verify(stationMapper).stationJsonToDto(jsonNode);
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -70,12 +70,12 @@ class StationServiceTest {
         StationDTO dto = new StationDTO();
         dto.setName("Hamburg Hbf");
         dto.setEvaNumber(8002549L);
-        when(staDaClient.getStationById(id)).thenReturn(jsonNode);
+        when(stationDataClient.getStationById(id)).thenReturn(jsonNode);
         when(stationMapper.stationJsonToDto(jsonNode)).thenReturn(dto);
 
         StationDTO result = stationService.getStationById(id);
 
-        verify(staDaClient).getStationById(id);
+        verify(stationDataClient).getStationById(id);
         assertEquals("Hamburg Hbf", result.getName());
     }
 
@@ -83,13 +83,13 @@ class StationServiceTest {
     void getStationByIdInvalidIdThrows() {
         assertThrows(IllegalArgumentException.class, () -> stationService.getStationById(null));
         assertThrows(IllegalArgumentException.class, () -> stationService.getStationById(0L));
-        verifyNoInteractions(staDaClient);
+        verifyNoInteractions(stationDataClient);
     }
 
     @Test
     void getStationByIdNoStationThrows() {
         Long id = 999L;
-        when(staDaClient.getStationById(id)).thenReturn(null);
+        when(stationDataClient.getStationById(id)).thenReturn(null);
         assertThrows(RuntimeException.class, () -> stationService.getStationById(id));
     }
 
@@ -99,7 +99,7 @@ class StationServiceTest {
         JsonNode jsonNode = mock(JsonNode.class);
         StationDTO dto = new StationDTO();
         dto.setEvaNumber(null);
-        when(staDaClient.getStationById(id)).thenReturn(jsonNode);
+        when(stationDataClient.getStationById(id)).thenReturn(jsonNode);
         when(stationMapper.stationJsonToDto(jsonNode)).thenReturn(dto);
         assertThrows(RuntimeException.class, () -> stationService.getStationById(id));
     }
