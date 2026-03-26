@@ -1,11 +1,14 @@
 package com.bf.navigator.service.station.client;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,8 +43,13 @@ public class StationDataClient {
         headers.set("DB-Api-Key", clientSecret);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        String url = baseUrl + "/stations?searchstring=" + query;
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        URI uri = UriComponentsBuilder.fromUriString(baseUrl)
+                .path("/stations")
+                .queryParam("searchstring", query)
+                .build()
+                .encode()
+                .toUri();
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
 
         try {
             var rootNode = objectMapper.readTree(response.getBody());
