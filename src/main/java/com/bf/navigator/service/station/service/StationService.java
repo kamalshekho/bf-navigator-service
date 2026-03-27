@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.bf.navigator.service.station.client.StationDataClient;
@@ -16,7 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 public class StationService {
@@ -26,8 +26,9 @@ public class StationService {
     private final StationMapper stationMapper;
     private final FacilityMapper facilityMapper;
 
-
+    @Cacheable(value = "stations", key = "#query", unless = "#result.isEmpty()")
     public List<StationDTO> searchStations(String query) {
+        System.out.println("Calling DB API for searchStations with query: " + query);
         if (query == null || query.isBlank()) {
             throw new IllegalArgumentException("Query must not be empty");
         }
@@ -43,7 +44,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-
+    @Cacheable(value = "stationById", key = "#id", unless = "#result == null")
     public StationDTO getStationById(Long id) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Invalid station id: " + id);
@@ -60,7 +61,7 @@ public class StationService {
         return dto;
     }
 
-
+    @Cacheable(value = "facilities", key = "#stationNumber")
     public List<FacilityDTO> getStationFacilities(Long stationNumber) {
         if (stationNumber == null || stationNumber <= 0) {
             throw new IllegalArgumentException("Invalid station number: " + stationNumber);
