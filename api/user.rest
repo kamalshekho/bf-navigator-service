@@ -1,0 +1,15 @@
+#### Get My Profile
+GET http://localhost:8081/users/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrYW1hbC5zaGVraG8tdGVzdEBleGFtcGxlLmNvbSIsInVzZXJJZCI6NCwiaWF0IjoxNzc0OTkwMzMyLCJleHAiOjE3NzQ5OTM5MzJ9.U1r5UV_acgsq0zKBL4YsQ4DqCCJQBVA8Q7gYQZuhInM
+
+#### Update Me (protected)
+PUT http://localhost:8081/users/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrYW1hbC5zaGVraG8tdGVzdEBleGFtcGxlLmNvbSIsInVzZXJJZCI6NCwiaWF0IjoxNzc0OTkwMzMyLCJleHAiOjE3NzQ5OTM5MzJ9.U1r5UV_acgsq0zKBL4YsQ4DqCCJQBVA8Q7gYQZuhInM
+
+{
+  "firstName": "TEST",
+  "lastName": "Doe Updated",
+  "accessibilityTypes": ["VISUAL_IMPAIRMENT"]
+}
