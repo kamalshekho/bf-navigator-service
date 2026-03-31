@@ -1,3 +1,4 @@
 ### Timetable for station
 GET http://localhost:8080/stations/8002549/timetable?date=260325&time=1200
-Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrYW1hbC5zaGVraG8tdGVzdEBleGFtcGxlLmNvbSIsInVzZXJJZCI6NCwiaWF0IjoxNzc0OTkwMzMyLCJleHAiOjE3NzQ5OTM5MzJ9.U1r5UV_acgsq0zKBL4YsQ4DqCCJQBVA8Q7gYQZuhInM
