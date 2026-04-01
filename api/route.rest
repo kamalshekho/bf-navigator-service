@@ -1,0 +1,32 @@
+### Get routes for trains
+POST http://localhost:8081/routes/trains
+Content-Type: application/json
+Accept: application/json
+
+{
+  "origin": "Hamburg Hbf",
+  "destination": "Braunschweig Hbf",
+  "departureTime": "2026-04-02T08:00:00Z"
+}
+
+### Debug to check original google maps api response
+POST http://localhost:8081/routes/trains/original
+Content-Type: application/json
+Accept: application/json
+
+{
+  "origin": "Hamburg Hbf",
+  "destination": "Braunschweig Hbf",
+  "departureTime": "2026-04-02T08:00:00Z"
+}
+
+### Always gives back the same response for testing (we have only 1000 free requests to google maps)
+POST http://localhost:8081/routes/trains/debug
+Content-Type: application/json
+Accept: application/json
+
+{
+  "origin": "Hamburg Hbf",
+  "destination": "Braunschweig Hbf",
+  "departureTime": "2026-04-02T08:00:00Z"
+}
