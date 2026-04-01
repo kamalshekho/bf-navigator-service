@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
 
+
 @Service
 @RequiredArgsConstructor
 public class StationService {
@@ -28,7 +29,7 @@ public class StationService {
 
     @Cacheable(value = "stations", key = "#query", unless = "#result.isEmpty()")
     public List<StationDTO> searchStations(String query) {
-        System.out.println("Calling DB API for searchStations with query: " + query);
+        System.out.println("search Station method called for query: " + query);
         if (query == null || query.isBlank()) {
             throw new IllegalArgumentException("Query must not be empty");
         }
@@ -43,6 +44,7 @@ public class StationService {
                 .filter(dto -> dto.getEvaNumber() != null)
                 .collect(Collectors.toList());
     }
+
 
     @Cacheable(value = "stationById", key = "#id", unless = "#result == null")
     public StationDTO getStationById(Long id) {
@@ -60,6 +62,7 @@ public class StationService {
         }
         return dto;
     }
+
 
     @Cacheable(value = "facilities", key = "#stationNumber")
     public List<FacilityDTO> getStationFacilities(Long stationNumber) {
