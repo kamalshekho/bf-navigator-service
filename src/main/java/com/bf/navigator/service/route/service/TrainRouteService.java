@@ -188,6 +188,19 @@ public class TrainRouteService {
     }
 
 
+    private String buildStationQuery(String stationName) {
+        if (stationName.contains("Hauptbahnhof")) {
+            String withHbf = stationName.replace("Hauptbahnhof", "Hbf");
+            return stationName + "," + withHbf;
+        }
+        if (stationName.contains("Hbf")) {
+            String withHauptbahnhof = stationName.replace("Hbf", "Hauptbahnhof");
+            return stationName + "," + withHauptbahnhof;
+        }
+        return stationName;
+    }
+
+
     private void enrichTransitsWithStationInfo(List<TrainRouteTransitDTO> transits) {
         // Collect all unique station names to avoid duplicate API calls
         Map<String, TrainRouteStopDTO> queryToFirstStop = new java.util.LinkedHashMap<>();
@@ -202,7 +215,7 @@ public class TrainRouteService {
             if (stop == null || stop.getStationName() == null || stop.getStationName().isBlank()) {
                 continue;
             }
-            String query = stop.getStationName().replace("Hauptbahnhof", "Hbf");
+            String query = buildStationQuery(stop.getStationName());
             queryToFirstStop.putIfAbsent(query, stop);
         }
 
@@ -237,7 +250,7 @@ public class TrainRouteService {
             if (stop == null || stop.getStationName() == null || stop.getStationName().isBlank()) {
                 continue;
             }
-            String query = stop.getStationName().replace("Hauptbahnhof", "Hbf");
+            String query = buildStationQuery(stop.getStationName());
             StationDTO station = queryToStation.get(query);
             if (station != null) {
                 stop.setStation(station);
