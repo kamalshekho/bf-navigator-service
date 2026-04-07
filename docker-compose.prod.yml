@@ -1,0 +1,8 @@
+services:
+  backend:
+    image: ghcr.io/kamalshekho/bf-navigator-service:latest
+    build: !reset null
+
+  frontend:
+    image: ghcr.io/iliasalmerekov/bf-navigator-web:latest
+    build: !reset null
