@@ -18,5 +18,7 @@ public class TrainRouteResponseDTO {
     private String arrivalTime;
     private String localizedDistanceText;
     private String localizedDurationText;
+    private TrainRouteAccessibilitySummaryDTO accessibilitySummary;
     private List<TrainRouteTransitDTO> transits;
+    private List<TrainRouteTouchpointDTO> touchpoints;
 }
