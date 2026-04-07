@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import lombok.RequiredArgsConstructor;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -20,12 +19,10 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,7 +30,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/stations/**", "/timetable/**", "/swagger-ui/**",
+                        .requestMatchers("/auth/**", "/actuator/**", "/stations/**", "/timetable/**", "/swagger-ui/**",
                                 "/v3/api-docs/**", "/routes/**", "/swagger-ui.html")
                         .permitAll()
                         .anyRequest().authenticated())
