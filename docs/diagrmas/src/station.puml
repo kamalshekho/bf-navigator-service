@@ -1,0 +1,28 @@
+@startuml station
+package "navigator" {
+  package "service" {
+    package "station" {
+      package "client" {
+        class StationDataClient
+        class StationFacilitiesClient
+      }
+      package "controller" {
+        class StationController
+      }
+      package "dto" {
+        class FacilityDTO
+        class FacilityState
+        class FacilityType
+        class StationDTO
+      }
+      package "mapper" {
+        class FacilityMapper
+        class StationMapper
+      }
+      package "service" {
+        class StationService
+      }
+    }
+  }
+}
+@enduml
