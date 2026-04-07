@@ -23,6 +23,9 @@ services:
     container_name: bf-frontend
     ports:
       - "8080:80"
+    environment:
+      - BACKEND_URL=http://backend:8080
+      - PORT=80
     depends_on:
       - backend
 
