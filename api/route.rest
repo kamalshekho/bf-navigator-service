@@ -9,7 +9,33 @@ Accept: application/json
   "departureTime": "2026-04-02T08:00:00Z"
 }
 
-### Debug to check original google maps api response
+### Response shape for `/routes/trains` and `/routes/trains/debug`
+# {
+#   "trips": [
+#     {
+#       "origin": "Hamburg Hauptbahnhof",
+#       "destination": "Braunschweig Hauptbahnhof",
+#       "departureTime": "2026-04-02T08:29:00Z",
+#       "arrivalTime": "2026-04-02T10:45:00Z",
+#       "localizedDistanceText": "240 km",
+#       "localizedDurationText": "2 Stunden, 20 Minuten",
+#       "accessibilitySummary": {
+#         "status": "LIMITED",
+#         "summary": "1/2 stations step-free",
+#         "totalStations": 2,
+#         "stepFreeStations": 1,
+#         "mobilityServiceStations": 2,
+#         "activeElevators": 1,
+#         "inactiveElevators": 0,
+#         "activeEscalators": 0,
+#         "inactiveEscalators": 1
+#       },
+#       "transits": []
+#     }
+#   ]
+# }
+
+### Stable frontend contract for testing without spending Google quota
 POST http://localhost:8081/routes/trains/original
 Content-Type: application/json
 Accept: application/json

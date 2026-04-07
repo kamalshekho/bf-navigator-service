@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bf.navigator.service.route.dto.TrainRouteRequestDTO;
-import com.bf.navigator.service.route.dto.TrainRouteResponseDTO;
+import com.bf.navigator.service.route.dto.TrainRouteSearchResponseDTO;
 import com.bf.navigator.service.route.service.TrainRouteService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,8 @@ public class TrainRouteController {
 
 
     @PostMapping
-    public ResponseEntity<TrainRouteResponseDTO> getTrainRoute(@Valid @RequestBody TrainRouteRequestDTO request) {
-        return ResponseEntity.ok(trainRouteService.getTrainRoute(request, false));
+    public ResponseEntity<TrainRouteSearchResponseDTO> getTrainRoute(@Valid @RequestBody TrainRouteRequestDTO request) {
+        return ResponseEntity.ok(trainRouteService.searchTrainRoutes(request, false));
     }
 
 
@@ -37,8 +37,8 @@ public class TrainRouteController {
 
 
     @PostMapping(value = "/debug", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TrainRouteResponseDTO> getDebugTrainRoute(@Valid @RequestBody TrainRouteRequestDTO request) {
-        return ResponseEntity.ok(trainRouteService.getTrainRoute(request, true));
+    public ResponseEntity<TrainRouteSearchResponseDTO> getDebugTrainRoute(@Valid @RequestBody TrainRouteRequestDTO request) {
+        return ResponseEntity.ok(trainRouteService.searchTrainRoutes(request, true));
     }
 
 }
