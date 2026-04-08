@@ -27,6 +27,7 @@ public class StationService {
     private final StationMapper stationMapper;
     private final FacilityMapper facilityMapper;
 
+
     @Cacheable(value = "stations", key = "#query", unless = "#result.isEmpty()")
     public List<StationDTO> searchStations(String query) {
         System.out.println("search Station method called for query: " + query);

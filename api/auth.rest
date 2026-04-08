@@ -21,7 +21,6 @@ Content-Type: application/json
 }
 
 
-
 #### health
 GET http://localhost:8080/actuator/health
 Content-Type: application/json
